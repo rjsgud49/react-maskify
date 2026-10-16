@@ -1,20 +1,20 @@
-# react-mask-input
+# react-maskify
 
-[![npm](https://img.shields.io/npm/v/react-mask-input.svg)](https://www.npmjs.com/package/react-mask-input)
-[![downloads](https://img.shields.io/npm/dw/react-mask-input.svg)](https://www.npmjs.com/package/react-mask-input)
-[![bundle size](https://img.shields.io/bundlephobia/minzip/react-mask-input)](https://bundlephobia.com/package/react-mask-input)
-[![types](https://img.shields.io/npm/types/react-mask-input.svg)](https://www.npmjs.com/package/react-mask-input)
-[![license](https://img.shields.io/npm/l/react-mask-input.svg)](./LICENSE)
+[![npm](https://img.shields.io/npm/v/react-maskify.svg)](https://www.npmjs.com/package/react-maskify)
+[![downloads](https://img.shields.io/npm/dw/react-maskify.svg)](https://www.npmjs.com/package/react-maskify)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/react-maskify)](https://bundlephobia.com/package/react-maskify)
+[![types](https://img.shields.io/npm/types/react-maskify.svg)](https://www.npmjs.com/package/react-maskify)
+[![license](https://img.shields.io/npm/l/react-maskify.svg)](./LICENSE)
 
 **A drop-in `react-input-mask` alternative for React 19.** No `findDOMNode`, zero dependencies, TypeScript-first, ~2.5 KB gzipped.
 
 `react-input-mask` (last release 2.0.4, 2022) calls `ReactDOM.findDOMNode`, which **was removed in React 19**, so it crashes with
 `TypeError: findDOMNode is not a function` / `react_dom.findDOMNode is not a function`.
-`react-mask-input` keeps the same props, so the **findDOMNode fix is a one-line import change**.
+`react-maskify` keeps the same props, so the **findDOMNode fix is a one-line import change**.
 
 ```diff
 - import InputMask from 'react-input-mask';
-+ import InputMask from 'react-mask-input';
++ import InputMask from 'react-maskify';
 ```
 
 - ✅ React 17+ (tested on 18 and 19; ref as a prop *and* `forwardRef`)
@@ -28,14 +28,14 @@
 ## Install
 
 ```bash
-npm i react-mask-input
-# or: pnpm add react-mask-input / yarn add react-mask-input
+npm i react-maskify
+# or: pnpm add react-maskify / yarn add react-maskify
 ```
 
 ## Usage
 
 ```tsx
-import InputMask, { presets } from 'react-mask-input';
+import InputMask, { presets } from 'react-maskify';
 
 <InputMask mask="999-9999-9999" placeholder="010-0000-0000" />
 <InputMask mask={presets.card} maskChar={null} />
@@ -94,7 +94,7 @@ const [phone, setPhone] = useState('');
 ### `useMask` hook
 
 ```tsx
-import { useMask } from 'react-mask-input';
+import { useMask } from 'react-maskify';
 
 function PhoneField() {
   const { inputProps, unmaskedValue } = useMask({ mask: '999-9999-9999', maskChar: null });
@@ -105,7 +105,7 @@ function PhoneField() {
 ### Pure utilities (no React)
 
 ```ts
-import { formatWithMask, unmask, isComplete } from 'react-mask-input';
+import { formatWithMask, unmask, isComplete } from 'react-maskify';
 
 formatWithMask('01012345678', '999-9999-9999'); // '010-1234-5678'
 formatWithMask('0101', '999-9999-9999');        // '010-1'
@@ -137,7 +137,7 @@ All other props go to the `<input>`.
 
 ## Migrating from react-input-mask
 
-1. `npm remove react-input-mask @types/react-input-mask && npm i react-mask-input`
+1. `npm remove react-input-mask @types/react-input-mask && npm i react-maskify`
 2. Replace the import. Done for most apps.
 
 Differences, listed honestly:
@@ -153,7 +153,7 @@ Differences, listed honestly:
 
 ## 한국어
 
-`react-mask-input`은 React 19에서 `findDOMNode` 제거로 동작하지 않는 `react-input-mask`를 **import 한 줄만 바꿔서** 대체할 수 있는 입력 마스크 라이브러리입니다.
+`react-maskify`은 React 19에서 `findDOMNode` 제거로 동작하지 않는 `react-input-mask`를 **import 한 줄만 바꿔서** 대체할 수 있는 입력 마스크 라이브러리입니다.
 
 - React 17 / 18 / 19 지원, 의존성 0개, gzip 약 2.5KB
 - 휴대폰 번호(`presets.phoneKR` → `010-0000-0000`), 카드 번호, 날짜(`9999.99.99`), 사업자등록번호 등 프리셋 제공
@@ -162,7 +162,7 @@ Differences, listed honestly:
 - react-hook-form의 `register`와 `Controller` 모두 사용할 수 있습니다.
 
 ```tsx
-import InputMask, { presets, unmask } from 'react-mask-input';
+import InputMask, { presets, unmask } from 'react-maskify';
 
 <InputMask mask={presets.phoneKR} maskChar={null} placeholder="010-0000-0000" />
 unmask('010-1234-5678', presets.phoneKR); // '01012345678'

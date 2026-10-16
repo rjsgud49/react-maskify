@@ -1,5 +1,5 @@
 {
-  "name": "react-mask-input",
+  "name": "react-maskify",
   "version": "0.1.0",
   "description": "React 19 compatible input mask component & hook. Drop-in react-input-mask alternative without findDOMNode. Zero deps, TypeScript, ~2KB.",
   "author": "rjsgud49",
