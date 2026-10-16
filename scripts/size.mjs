@@ -1,3 +1,4 @@
+/* global console */
 import { readFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 for (const f of ['dist/index.js', 'dist/index.cjs']) {
