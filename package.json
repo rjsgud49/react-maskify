@@ -1,0 +1,87 @@
+{
+  "name": "react-mask-input",
+  "version": "0.1.0",
+  "description": "React 19 compatible input mask component & hook. Drop-in react-input-mask alternative without findDOMNode. Zero deps, TypeScript, ~2KB.",
+  "author": "rjsgud49",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "keywords": [
+    "react",
+    "input",
+    "mask",
+    "input-mask",
+    "masked-input",
+    "react-input-mask",
+    "react-input-mask-alternative",
+    "react-text-mask",
+    "react-19",
+    "findDOMNode",
+    "hook",
+    "useMask",
+    "phone",
+    "credit-card",
+    "date",
+    "format",
+    "typescript",
+    "korean",
+    "react-hook-form"
+  ],
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:react18": "npm i --no-save react@18 react-dom@18 && vitest run; s=$?; npm i --no-save react@19 react-dom@19; exit $s",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "size": "node scripts/size.mjs",
+    "prepublishOnly": "npm run typecheck && npm run lint && npm test && npm run test:react18 && npm run build"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "jsdom": "^26.1.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-hook-form": "^7.90.0",
+    "tsup": "^9.0.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.71.2",
+    "vite": "^6.4.4",
+    "vitest": "^3.2.7"
+  }
+}
