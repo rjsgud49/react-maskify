@@ -3,8 +3,11 @@
 [![npm](https://img.shields.io/npm/v/react-maskify.svg)](https://www.npmjs.com/package/react-maskify)
 [![downloads](https://img.shields.io/npm/dw/react-maskify.svg)](https://www.npmjs.com/package/react-maskify)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/react-maskify)](https://bundlephobia.com/package/react-maskify)
+[![CI](https://github.com/rjsgud49/react-maskify/actions/workflows/ci.yml/badge.svg)](https://github.com/rjsgud49/react-maskify/actions/workflows/ci.yml)
 [![types](https://img.shields.io/npm/types/react-maskify.svg)](https://www.npmjs.com/package/react-maskify)
 [![license](https://img.shields.io/npm/l/react-maskify.svg)](./LICENSE)
+
+**▶ [Live demo](https://rjsgud49.github.io/react-maskify/)** · [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz_small.svg)](https://stackblitz.com/github/rjsgud49/react-maskify/tree/main/demo)
 
 **A drop-in `react-input-mask` alternative for React 19.** No `findDOMNode`, zero dependencies, TypeScript-first, ~2.5 KB gzipped.
 
@@ -20,7 +23,7 @@
 - ✅ React 17+ (tested on 18 and 19; ref as a prop *and* `forwardRef`)
 - ✅ Same API as `react-input-mask` v2 (+ v3 prop names)
 - ✅ `useMask` hook and pure `formatWithMask` / `unmask` helpers
-- ✅ Caret preserved on typing, backspace/delete in the middle, paste and selection replace
+- ✅ Caret preserved on typing, backspace/delete in the middle, paste and selection replace (Playwright-tested in Chromium, Firefox & WebKit)
 - ✅ IME / Korean, Japanese, Chinese composition safe
 - ✅ SSR safe (Next.js, Remix), controlled & uncontrolled, react-hook-form friendly
 - ✅ ESM + CJS + `.d.ts`, `sideEffects: false`, zero runtime deps

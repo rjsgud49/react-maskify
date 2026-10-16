@@ -331,3 +331,19 @@ describe('react-hook-form', () => {
     expect(values.d).toBe('2026-10-16');
   });
 });
+
+describe('focus caret timer (regression 0.2.0)', () => {
+  it('does not move the caret back if the user typed before the focus timer fired', async () => {
+    vi.useFakeTimers();
+    const { getByRole } = render(<InputMask mask="999-9999-9999" maskChar={null} />);
+    const i = getByRole('textbox') as HTMLInputElement;
+    act(() => i.focus());
+    i.value = '01';
+    i.setSelectionRange(2, 2);
+    fireEvent.change(i);
+    act(() => vi.runAllTimers());
+    expect(i.value).toBe('01');
+    expect(i.selectionStart).toBe(2);
+    vi.useRealTimers();
+  });
+});

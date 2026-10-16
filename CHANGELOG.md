@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0 — 2026-10-16
+
+- **Fix:** the deferred focus handler could move the caret back to the first empty slot if the user started typing right after focusing (before the timer fired), scrambling the input order (e.g. `01012345678` → `012-3456-7801`). It now re-reads the live value and leaves the caret alone once the user has typed.
+- Real-browser end-to-end tests with Playwright (Chromium, Firefox, WebKit): typing, backspace/delete in the middle and around literals, paste, selection replace, caret position, controlled mode, and Korean IME composition (via Chrome DevTools Protocol). Run in CI.
+- Live demo site (`/demo`, Vite + React) with presets, react-input-mask migration side-by-side and a react-hook-form example, deployed to GitHub Pages; StackBlitz link.
+- README: CI badge, demo and StackBlitz links.
+
+## 0.1.1 — 2026-10-16
+
+- Add repository / homepage / bugs links.
+
 ## 0.1.0 — 2026-10-16
 
 Initial release.

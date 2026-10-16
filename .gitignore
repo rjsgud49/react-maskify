@@ -2,3 +2,7 @@ node_modules
 dist
 *.tgz
 .npmrc.publish
+test-results
+playwright-report
+demo/dist
+demo/node_modules

@@ -149,11 +149,14 @@ export function useMask(o: UseMaskOptions): UseMaskResult {
     onFocus(e) {
       setFocused(true);
       const i = e.currentTarget;
-      const fillPos = Math.min(caretFor(p, raw.length), render(p, raw).length);
-      if (!raw && p.maskChar && !o.alwaysShowMask) pending.current = fillPos;
+      const fillAt = (r: string) => Math.min(caretFor(p, r.length), render(p, r).length);
+      if (!raw && p.maskChar && !o.alwaysShowMask) pending.current = fillAt(raw);
+      const v0 = i.value;
       setTimeout(() => {
-        if (i.ownerDocument.activeElement === i && i.selectionStart === i.selectionEnd && (i.selectionEnd || 0) > fillPos)
-          setSel(fillPos);
+        // Recompute from the live value: the user may already have typed since focus.
+        if (i.ownerDocument.activeElement !== i || i.value !== v0 && i.value !== render(p, raw)) return;
+        const fillPos = fillAt(conform(p, i.value));
+        if (i.selectionStart === i.selectionEnd && (i.selectionEnd || 0) > fillPos) setSel(fillPos);
       });
       o.onFocus?.(e);
     },
