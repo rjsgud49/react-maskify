@@ -17,7 +17,7 @@
 + import InputMask from 'react-mask-input';
 ```
 
-- ✅ React 17, 18, 19 (ref as a prop *and* `forwardRef`)
+- ✅ React 17+ (tested on 18 and 19; ref as a prop *and* `forwardRef`)
 - ✅ Same API as `react-input-mask` v2 (+ v3 prop names)
 - ✅ `useMask` hook and pure `formatWithMask` / `unmask` helpers
 - ✅ Caret preserved on typing, backspace/delete in the middle, paste and selection replace
@@ -142,7 +142,7 @@ All other props go to the `<input>`.
 
 Differences, listed honestly:
 
-- **Deleting shifts characters left.** In v2, deleting in the middle leaves a gap (`12_-45`). Here the following characters move left (`124-5_`), like most modern mask libraries. Typing in the middle also shifts characters right; characters pushed past the end are dropped.
+- **Deleting shifts characters left.** react-input-mask v2 can leave a placeholder gap when deleting in the middle. Here the following characters move left (`124-5_`), like most modern mask libraries. Typing in the middle also shifts characters right; characters pushed past the end are dropped.
 - `ref` / `inputRef` point at the real `<input>`, not a class instance. v2's instance methods are not available.
 - No `onChange` is fired on focus or blur just because the mask appears or disappears; the shown value is derived from focus.
 - `beforeMaskedValueChange` gets `userInput = null`, and `oldState.selection` is `null`.
