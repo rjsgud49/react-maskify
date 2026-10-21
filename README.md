@@ -160,7 +160,7 @@ The older `presets` object (`presets.phoneKR`, `presets.card`, ...) is still exp
 | `maskPlaceholder` | `string \| null` | | v3 name; one character, or one per mask position. Wins over `maskChar` |
 | `formatChars` | `Record<string, string \| RegExp>` | `9`, `a`, `*` | replaces the defaults |
 | `alwaysShowMask` | `boolean` | `false` | show the mask when empty and not focused |
-| `beforeMaskedValueChange` | `(newState, oldState, userInput, maskOptions) => state` | | v2 hook |
+| `beforeMaskedValueChange` | `(newState, oldState, userInput, maskOptions) => state` | | v2 hook; `maskOptions` also has `slots`: `(string \| RegExp)[]`, one per mask position |
 | `beforeMaskedStateChange` | `({ previousState, currentState, nextState }) => state` | | v3 hook |
 | `inputRef` | `Ref<HTMLInputElement>` | | v2 ref prop |
 | `ref` | `Ref<HTMLInputElement>` | | the `<input>` element |

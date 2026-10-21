@@ -20,6 +20,27 @@ describe('codemod', () => {
     expect(code).toContain(`'react-input-mask-extra'`);
   });
 
+  it('leaves comments, strings, subpath imports and declare module alone', () => {
+    const src = [
+      `// see import X from 'react-input-mask' in old docs`,
+      `/* require('react-input-mask') */`,
+      `/**`,
+      ` * jest.mock("react-input-mask")`,
+      ` */`,
+      `const url = 'http://example.com/*'; import A from 'react-input-mask';`,
+      'const t = `// ${1}`; const B = require("react-input-mask");',
+      `import Deep from 'react-input-mask/lib/foo';`,
+      `declare module 'react-input-mask' {}`,
+    ].join('\n');
+    const { code, count } = transform(src);
+    expect(count).toBe(2);
+    expect(code).toBe(
+      src
+        .replace(`import A from 'react-input-mask'`, `import A from 'react-maskify/compat'`)
+        .replace(`require("react-input-mask");`, `require("react-maskify/compat");`),
+    );
+  });
+
   it('is idempotent', () => {
     const once = transform(fixture).code;
     expect(transform(once)).toEqual({ code: once, count: 0 });
@@ -44,6 +65,9 @@ describe('codemod', () => {
 
   it('prints help for unknown commands', () => {
     const cli = path.join(__dirname, '../bin/cli.mjs');
-    expect(execFileSync('node', [cli, '--help'], { encoding: 'utf8' })).toContain('Usage: react-maskify migrate');
+    const help = execFileSync('node', [cli, '--help'], { encoding: 'utf8' });
+    expect(help).toContain('Usage: react-maskify migrate');
+    expect(help).toContain('.mts/.cts');
+    expect(help).toContain('node_modules, .git, dist, build, .next and coverage');
   });
 });
