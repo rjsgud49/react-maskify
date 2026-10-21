@@ -1,4 +1,4 @@
-/** Ready-made masks. */
+/** Ready-made masks. For Korean formats with validation, see `react-maskify/presets`. */
 export const presets = {
   /** Korean mobile: 010-1234-5678 */
   phoneKR: '999-9999-9999',

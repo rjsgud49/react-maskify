@@ -2,7 +2,7 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import hooks from 'eslint-plugin-react-hooks';
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules', 'demo', 'test-results', 'playwright-report', 'e2e/vite.config.ts', 'playwright.config.ts'] },
+  { ignores: ['dist', 'node_modules', 'demo', 'test-results', 'playwright-report', 'e2e/vite.config.ts', 'playwright.config.ts', 'test/fixtures'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

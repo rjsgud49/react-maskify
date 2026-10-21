@@ -2,7 +2,10 @@ import * as React from 'react';
 import {
   applyEdit,
   caretFor,
+  capacity,
   conform,
+  defaultFormatChars,
+  toRegExp,
   parseMask,
   render,
   type FormatChars,
@@ -11,13 +14,26 @@ import {
   type ParsedMask,
 } from './core';
 
+/** Mask options passed to `beforeMaskedValueChange`, shaped like react-input-mask v2's. */
+export interface BeforeMaskedValueChangeConfig extends ParsedMask {
+  /** Mask with escapes removed and editable positions kept as their format char. */
+  mask: string;
+  /** Indexes of fixed (non-editable) characters. */
+  permanents: number[];
+  alwaysShowMask: boolean;
+  formatChars: FormatChars;
+}
+
 /** v2-style hook: `(newState, oldState, userInput, maskOptions) => newState` */
 export type BeforeMaskedValueChange = (
   newState: MaskedState,
   oldState: MaskedState,
   userInput: string | null,
-  maskOptions: ParsedMask,
+  maskOptions: BeforeMaskedValueChangeConfig,
 ) => MaskedState;
+
+/** A mask, or a function that picks the mask from the current input value (e.g. phone numbers of varying length). */
+export type MaskProp = MaskDefinition | ((value: string) => MaskDefinition);
 
 /** v3-style hook */
 export type BeforeMaskedStateChange = (states: {
@@ -27,7 +43,7 @@ export type BeforeMaskedStateChange = (states: {
 }) => MaskedState;
 
 export interface UseMaskOptions {
-  mask: MaskDefinition;
+  mask: MaskProp;
   /** Placeholder for unfilled slots (react-input-mask v2 name). Default `'_'`; `null` to hide. */
   maskChar?: string | null;
   /** Alias of `maskChar` (react-input-mask v3 name). Takes precedence when set. */
@@ -69,17 +85,34 @@ export interface UseMaskResult {
   inputRef: React.MutableRefObject<HTMLInputElement | null>;
 }
 
+function v2Config(p: ParsedMask, fc: FormatChars | undefined, alwaysShowMask: boolean): BeforeMaskedValueChangeConfig {
+  const formatChars = fc || defaultFormatChars;
+  const keys = Object.keys(formatChars);
+  const permanents: number[] = [];
+  let mask = '';
+  p.slots.forEach((s, i) => {
+    if (typeof s == 'string') {
+      permanents.push(i);
+      mask += s;
+    } else mask += keys.find((k) => String(toRegExp(formatChars[k])) === String(s)) || '*';
+  });
+  return { ...p, mask, permanents, alwaysShowMask, formatChars };
+}
+
 const useIsoLayoutEffect = typeof window != 'undefined' ? React.useLayoutEffect : React.useEffect;
 const str = (v: unknown): string => (v == null ? '' : Array.isArray(v) ? v.join('') : String(v));
 
 /** Headless masking hook. Spread the returned props onto an `<input>`. */
 export function useMask(o: UseMaskOptions): UseMaskResult {
-  const p = parseMask(o.mask, {
+  const parseOpts = {
     maskChar: o.maskPlaceholder !== undefined ? o.maskPlaceholder : o.maskChar,
     formatChars: o.formatChars,
-  });
+  };
+  const parseFor = (v: string) => parseMask(typeof o.mask == 'function' ? o.mask(v) : o.mask, parseOpts);
   const controlled = o.value !== undefined;
   const [inner, setInner] = React.useState(() => str(o.defaultValue));
+  const current = controlled ? str(o.value) : inner;
+  const p = parseFor(current);
   const [focused, setFocused] = React.useState(false);
   const [composing, setComposing] = React.useState<string | null>(null);
   const el = React.useRef<HTMLInputElement | null>(null);
@@ -87,8 +120,11 @@ export function useMask(o: UseMaskOptions): UseMaskResult {
   const backward = React.useRef(true);
   const snap = React.useRef('');
 
-  const raw = conform(p, controlled ? str(o.value) : inner);
-  const display = render(p, raw, focused || !!o.alwaysShowMask);
+  const raw = conform(p, current);
+  // A value returned by beforeMaskedValueChange/beforeMaskedStateChange is shown as-is, like react-input-mask does.
+  const hooked = React.useRef<string | null>(null);
+  const show = focused || !!o.alwaysShowMask;
+  const display = hooked.current !== null && current === hooked.current && (raw || show) ? current : render(p, raw, show);
   const shown = React.useRef(display);
   if (composing === null) shown.current = display;
 
@@ -108,10 +144,22 @@ export function useMask(o: UseMaskOptions): UseMaskResult {
     const i = e.currentTarget;
     const next = i.value;
     const c = i.selectionEnd == null ? next.length : i.selectionEnd;
-    const r = applyEdit(p, prev, next, c, backward.current);
+    let pe = p;
+    let r = applyEdit(p, prev, next, c, backward.current);
+    if (typeof o.mask == 'function') {
+      // Edit with whichever mask has more room, then lay the result out with the mask chosen for it.
+      const pn = parseFor(next);
+      const pa = capacity(pn) > capacity(p) ? pn : p;
+      r = applyEdit(pa, prev, next, c, backward.current);
+      pe = parseFor(r.raw);
+      const k = conform(pa, r.value.slice(0, r.caret)).length;
+      const value = render(pe, r.raw);
+      r = { ...r, value, caret: Math.min(k >= capacity(pe) ? value.length : caretFor(pe, k), value.length) };
+    }
     let state: MaskedState = { value: r.value, selection: { start: r.caret, end: r.caret } };
     const old: MaskedState = { value: prev, selection: null };
-    if (o.beforeMaskedValueChange) state = o.beforeMaskedValueChange(state, old, null, p);
+    if (o.beforeMaskedValueChange)
+      state = o.beforeMaskedValueChange(state, old, r.inserted || null, v2Config(pe, parseOpts.formatChars, !!o.alwaysShowMask));
     if (o.beforeMaskedStateChange)
       state = o.beforeMaskedStateChange({
         previousState: old,
@@ -119,6 +167,7 @@ export function useMask(o: UseMaskOptions): UseMaskResult {
         nextState: state,
       });
     const v = state.value;
+    hooked.current = o.beforeMaskedValueChange || o.beforeMaskedStateChange ? v : null;
     const caret = state.selection ? state.selection.end : v.length;
     i.value = v;
     setSel(caret);

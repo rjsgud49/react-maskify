@@ -1,12 +1,15 @@
 import * as React from 'react';
-import type { FormatChars, MaskDefinition } from './core';
-import { useMask, type BeforeMaskedStateChange, type BeforeMaskedValueChange } from './useMask';
+import type { FormatChars } from './core';
+import { useMask, type BeforeMaskedStateChange, type BeforeMaskedValueChange, type MaskProp } from './useMask';
 
 type InputAttrs = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children'>;
 
 export interface InputMaskProps extends InputAttrs {
-  /** Mask string (`9` digit, `a` letter, `*` alphanumeric, `\\` escapes) or array of literals/RegExps. Falsy = plain input. */
-  mask?: MaskDefinition | null;
+  /**
+   * Mask string (`9` digit, `a` letter, `*` alphanumeric, `\\` escapes), array of literals/RegExps,
+   * or a function `(value) => mask`. Falsy = plain input.
+   */
+  mask?: MaskProp | null;
   maskChar?: string | null;
   maskPlaceholder?: string | null;
   formatChars?: FormatChars;
@@ -15,8 +18,11 @@ export interface InputMaskProps extends InputAttrs {
   beforeMaskedStateChange?: BeforeMaskedStateChange;
   /** Legacy ref prop from react-input-mask v2. */
   inputRef?: React.Ref<HTMLInputElement>;
-  /** Render prop receiving the non-controlled props; must render a single input-like element. */
-  children?: (props: InputAttrs) => React.ReactElement;
+  /**
+   * v2 style: a function receiving the non-mask props, returning a single input-like element.
+   * v3 style: a single element (e.g. `<MyInput />`); mask props are merged into it.
+   */
+  children?: ((props: InputAttrs) => React.ReactElement) | React.ReactElement;
   /** React 19 ref-as-prop (also works via forwardRef on 17/18). */
   ref?: React.Ref<HTMLInputElement>;
 }
@@ -71,8 +77,10 @@ const InputMaskInner = (props: InputMaskProps, fref: React.ForwardedRef<HTMLInpu
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [outer, inputRef],
   );
+  const renderChild = (pp: InputAttrs): React.ReactElement | null =>
+    typeof children == 'function' ? children(pp) : React.isValidElement(children) ? React.cloneElement(children, pp) : null;
   if (!mask) {
-    const el = children ? children(rest) : null;
+    const el = renderChild(rest);
     const p = { ...rest, value, defaultValue, ref };
     return el ? React.cloneElement(el, p) : <input {...p} />;
   }
@@ -90,9 +98,10 @@ const InputMaskInner = (props: InputMaskProps, fref: React.ForwardedRef<HTMLInpu
     readOnly: rest.readOnly,
     ref,
   };
-  if (children) {
+  if (children != null) {
     const { disabled: _d, readOnly: _r, ...childProps } = rest;
-    return React.cloneElement(children(childProps), controlledProps);
+    const el = renderChild(childProps);
+    if (el) return React.cloneElement(el, controlledProps);
   }
   return <input {...rest} {...controlledProps} />;
 };

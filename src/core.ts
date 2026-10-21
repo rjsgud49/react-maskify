@@ -2,7 +2,10 @@ export type FormatChars = Record<string, string | RegExp>;
 export type MaskDefinition = string | ReadonlyArray<string | RegExp>;
 
 export interface MaskOptions {
-  /** Placeholder for unfilled editable slots. `null` hides unfilled slots. */
+  /**
+   * Placeholder for unfilled editable slots. `null` hides unfilled slots.
+   * A string as long as the mask (e.g. `'dd/mm/yyyy'` for `'99/99/9999'`) sets one placeholder per position.
+   */
   maskChar?: string | null;
   /** Map of mask characters to the pattern they accept. */
   formatChars?: FormatChars;
@@ -14,6 +17,8 @@ export type Slot = string | RegExp;
 export interface ParsedMask {
   slots: Slot[];
   maskChar: string | null;
+  /** Per-position placeholder, set when `maskChar` has the same length as the mask. */
+  placeholder?: string[];
 }
 
 export const defaultFormatChars: FormatChars = {
@@ -22,7 +27,15 @@ export const defaultFormatChars: FormatChars = {
   '*': '[A-Za-z0-9]',
 };
 
-const toRe = (p: string | RegExp): RegExp => (typeof p == 'string' ? new RegExp('^(?:' + p + ')$') : p);
+const reCache = new Map<string, RegExp>();
+/** @internal */
+export const toRegExp = (p: string | RegExp): RegExp => {
+  if (typeof p != 'string') return p;
+  let r = reCache.get(p);
+  if (!r) reCache.set(p, (r = new RegExp('^(?:' + p + ')$')));
+  return r;
+};
+const toRe = toRegExp;
 
 const cache = new Map<string, ParsedMask>();
 
@@ -50,7 +63,8 @@ export function parseMask(mask: MaskDefinition, options: MaskOptions = {}): Pars
       else slots.push(s);
     }
   }
-  const parsed = { slots, maskChar: maskChar ? maskChar[0] : null };
+  const parsed: ParsedMask = { slots, maskChar: maskChar ? maskChar[0] : null };
+  if (maskChar && maskChar.length > 1 && [...maskChar].length == slots.length) parsed.placeholder = [...maskChar];
   if (key) cache.set(key, parsed);
   return parsed;
 }
@@ -71,6 +85,10 @@ export function conform(p: ParsedMask, input: string, from = 0, limit = Infinity
     const s = slots[i];
     if (s === undefined) break;
     if (!editable(s)) {
+      i++;
+      continue;
+    }
+    if (p.placeholder && p.placeholder[i] === ch) {
       i++;
       continue;
     }
@@ -101,10 +119,11 @@ export function render(p: ParsedMask, raw: string, show = true): string {
   if (!raw && !show) return '';
   let out = '';
   let k = 0;
-  for (const s of p.slots) {
+  for (let i = 0; i < p.slots.length; i++) {
+    const s = p.slots[i];
     if (editable(s)) {
       if (k < raw.length) out += raw[k++];
-      else if (p.maskChar) out += p.maskChar;
+      else if (p.maskChar) out += p.placeholder ? p.placeholder[i] : p.maskChar;
       else break;
     } else out += s;
   }
@@ -141,7 +160,7 @@ export function applyEdit(
   next: string,
   caret: number,
   backward = true,
-): { value: string; caret: number; raw: string } {
+): { value: string; caret: number; raw: string; inserted: string } {
   let prevEnd = prev.length - (next.length - caret);
   if (prevEnd < 0 || next.slice(caret) !== prev.slice(prevEnd)) {
     // fall back to plain diff
@@ -170,7 +189,7 @@ export function applyEdit(
   const raw = fill(p, head + ins + rawPrev.slice(re)).slice(0, cap);
   const value = render(p, raw);
   const k = rs + ins.length;
-  return { value, raw, caret: Math.min(k >= cap ? value.length : caretFor(p, k), value.length) };
+  return { value, raw, inserted, caret: Math.min(k >= cap ? value.length : caretFor(p, k), value.length) };
 }
 
 /** Format any string (raw or partially masked) with a mask. Hides unfilled slots by default. */

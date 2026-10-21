@@ -1,7 +1,7 @@
 {
   "name": "react-maskify",
   "version": "0.2.0",
-  "description": "React 19 compatible input mask component & hook. Drop-in react-input-mask alternative without findDOMNode. Zero deps, TypeScript, ~2KB.",
+  "description": "Input mask component and hook for React 17-19. Maintained replacement for react-input-mask with a compat entry, Korean presets and a migration codemod. Zero dependencies, TypeScript.",
   "author": "rjsgud49",
   "license": "MIT",
   "type": "module",
@@ -20,13 +20,35 @@
         "default": "./dist/index.cjs"
       }
     },
+    "./compat": {
+      "import": {
+        "types": "./dist/compat.d.ts",
+        "default": "./dist/compat.js"
+      },
+      "require": {
+        "types": "./dist/compat.d.cts",
+        "default": "./dist/compat.cjs"
+      }
+    },
+    "./presets": {
+      "import": {
+        "types": "./dist/presets.d.ts",
+        "default": "./dist/presets.js"
+      },
+      "require": {
+        "types": "./dist/presets.d.cts",
+        "default": "./dist/presets.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
+    "bin",
     "README.md",
     "LICENSE",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "docs"
   ],
   "keywords": [
     "react",
@@ -47,7 +69,14 @@
     "format",
     "typescript",
     "korean",
-    "react-hook-form"
+    "react-hook-form",
+    "react19",
+    "react-18",
+    "korean-phone",
+    "business-registration-number",
+    "resident-registration-number",
+    "codemod",
+    "ssr"
   ],
   "peerDependencies": {
     "react": ">=17.0.0",
@@ -72,6 +101,7 @@
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.8",
+    "@types/node": "^22.20.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "eslint": "^9.39.5",
@@ -93,5 +123,18 @@
   "homepage": "https://github.com/rjsgud49/react-maskify#readme",
   "bugs": {
     "url": "https://github.com/rjsgud49/react-maskify/issues"
+  },
+  "typesVersions": {
+    "*": {
+      "compat": [
+        "./dist/compat.d.ts"
+      ],
+      "presets": [
+        "./dist/presets.d.ts"
+      ]
+    }
+  },
+  "bin": {
+    "react-maskify": "./bin/cli.mjs"
   }
 }
