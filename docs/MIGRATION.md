@@ -33,7 +33,9 @@ This guide covers moving from `react-input-mask` 2.x (and 3.0.0 alpha) to `react
 
    The codemod rewrites the module name in `import`, `export ... from`, `import()`, `require()`,
    `jest.mock()` and `vi.mock()`. It does not touch comments or other strings, and skips
-   `node_modules`, `dist`, `build`, `.next` and `coverage`. Running it twice is safe.
+   `node_modules`, `.git`, `dist`, `build`, `.next` and `coverage`. Running it twice is safe.
+   Subpath imports (`react-input-mask/lib/...`) and `declare module 'react-input-mask'`
+   declarations are not rewritten; update those by hand.
 
 3. Run your tests. Check the differences listed below.
 
@@ -51,7 +53,7 @@ The compat entry also exports the type names from `@types/react-input-mask` (`Pr
 | `maskChar="_"` / `maskChar={null}` (v2) | same | default `'_'` |
 | `maskPlaceholder` (v3) | same | single character, or a string as long as the mask (`dd/mm/yyyy`) |
 | `alwaysShowMask` | same | |
-| `beforeMaskedValueChange(newState, oldState, userInput, maskOptions)` (v2) | same | `maskOptions` has `mask`, `maskChar`, `permanents`, `formatChars`, `alwaysShowMask`; `oldState.selection` is `null` |
+| `beforeMaskedValueChange(newState, oldState, userInput, maskOptions)` (v2) | same | `maskOptions` has `mask`, `maskChar`, `permanents`, `formatChars`, `alwaysShowMask`, plus `slots` (one entry per mask position: a literal string or the `RegExp` of an editable slot) and, with a per-position placeholder, `placeholder`; `oldState.selection` is `null` |
 | `beforeMaskedStateChange({ previousState, currentState, nextState })` (v3) | same | |
 | `children={(props) => <Input {...props} />}` (v2) | same | |
 | `children={<Input />}` (v3) | same | |

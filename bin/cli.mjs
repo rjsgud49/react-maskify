@@ -6,7 +6,8 @@ const [cmd, ...args] = process.argv.slice(2);
 const help = `Usage: react-maskify migrate [paths...] [--dry]
 
 Rewrites imports of 'react-input-mask' to 'react-maskify/compat'
-in .js/.jsx/.ts/.tsx/.mjs/.cjs files (node_modules, dist and build are skipped).
+in .js/.jsx/.ts/.tsx/.mjs/.cjs/.mts/.cts files
+(node_modules, .git, dist, build, .next and coverage are skipped).
   --dry   list the files that would change without writing them`;
 
 if (cmd !== 'migrate') {

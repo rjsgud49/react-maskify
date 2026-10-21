@@ -181,6 +181,7 @@ describe('compat: hooks', () => {
     expect(opts.permanents).toEqual([2]);
     expect(opts.maskChar).toBe('_');
     expect(opts.alwaysShowMask).toBe(false);
+    expect(opts.slots).toEqual([/^(?:[0-9])$/, /^(?:[0-9])$/, '-', /^(?:[A-Za-z])$/]);
   });
 
   it('beforeMaskedValueChange README example: optional trailing dash in ZIP', async () => {
