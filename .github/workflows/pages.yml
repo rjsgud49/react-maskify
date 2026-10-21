@@ -22,7 +22,7 @@ jobs:
       - run: npx vite build
         working-directory: demo
         env: { DEMO_BASE: /react-maskify/ }
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v3
         with: { path: demo/dist }
   deploy:
