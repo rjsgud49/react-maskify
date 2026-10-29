@@ -1,6 +1,6 @@
 {
   "name": "react-maskify",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Input mask component and hook for React 17-19. Maintained replacement for react-input-mask with a compat entry, Korean presets and a migration codemod. Zero dependencies, TypeScript.",
   "author": "rjsgud49",
   "license": "MIT",

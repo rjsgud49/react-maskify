@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.1 — 2026-10-29
+
+- **Fix:** the codemod no longer rewrites `react-input-mask` inside comments or string literals. `--help` lists `.mts` and `.cts`, and the directories it skips (`node_modules`, `.git`, `dist`, `build`, `.next`, `coverage`).
+- **Fix:** CJS builds share chunks, so `react-maskify` and `react-maskify/compat` export the same component.
+- Docs: `maskOptions.slots` (one entry per mask position; a per-position placeholder is also exposed as `placeholder`). The migration guide notes that subpath imports and `declare module 'react-input-mask'` are not rewritten.
+- Dev: vitest 4.1.12, which clears the dev-only audit findings in tinypool and `@vitest/mocker`. Dependabot groups npm minor and patch updates; major updates stay individual pull requests.
+- CI: `actions/setup-node` 7, `actions/upload-artifact` 7, `actions/configure-pages` 6, `actions/deploy-pages` 5.
+
 ## 0.3.0 — 2026-10-21
 
 - New entry `react-maskify/compat`: default export `InputMask` for code written against react-input-mask. Also exports `Props` and `InputState` types.
