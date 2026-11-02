@@ -135,6 +135,6 @@
     }
   },
   "bin": {
-    "react-maskify": "./bin/cli.mjs"
+    "react-maskify": "bin/cli.mjs"
   }
 }
