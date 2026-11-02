@@ -9,6 +9,14 @@ jobs:
         with: { node-version: 20, cache: npm }
       - run: npm ci
       - run: npm run typecheck && npm run lint && npm test && npm run test:react18 && npm run build && npm run size
+  test-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - run: npm test
   e2e:
     runs-on: ubuntu-latest
     steps:
