@@ -31,8 +31,10 @@ This guide covers moving from `react-input-mask` 2.x (and 3.0.0 alpha) to `react
    npx react-maskify migrate src --dry    # only lists files
    ```
 
-   The codemod rewrites the module name in `import`, `export ... from`, `import()`, `require()`,
-   `jest.mock()` and `vi.mock()`. It does not touch comments or other strings, and skips
+   The codemod rewrites `react-input-mask`, any `@scope/react-input-mask` (for example
+   `@kerim-keskin/react-input-mask`), and `react-input-mask-next` to `react-maskify/compat` in
+   `import`, `export ... from`, `import()`, `require()`, `jest.mock()` and `vi.mock()`.
+   It does not touch comments or other strings, and skips
    `node_modules`, `.git`, `dist`, `build`, `.next` and `coverage`. Running it twice is safe.
    Subpath imports (`react-input-mask/lib/...`) and `declare module 'react-input-mask'`
    declarations are not rewritten; update those by hand.

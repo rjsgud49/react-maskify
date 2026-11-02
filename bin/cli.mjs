@@ -5,7 +5,7 @@ import { migrate } from './migrate.mjs';
 const [cmd, ...args] = process.argv.slice(2);
 const help = `Usage: react-maskify migrate [paths...] [--dry]
 
-Rewrites imports of 'react-input-mask' to 'react-maskify/compat'
+Rewrites imports of 'react-input-mask', '@scope/react-input-mask', and 'react-input-mask-next' to 'react-maskify/compat'
 in .js/.jsx/.ts/.tsx/.mjs/.cjs/.mts/.cts files
 (node_modules, .git, dist, build, .next and coverage are skipped).
   --dry   list the files that would change without writing them`;
