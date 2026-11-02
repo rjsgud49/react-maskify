@@ -1,15 +1,35 @@
 # react-maskify
 
+React 19-compatible drop-in replacement for [react-input-mask](https://github.com/sanniassin/react-input-mask), with Korean IME support and Korean number presets.
+
 [![npm version](https://img.shields.io/npm/v/react-maskify.svg)](https://www.npmjs.com/package/react-maskify)
 [![npm downloads](https://img.shields.io/npm/dw/react-maskify.svg)](https://www.npmjs.com/package/react-maskify)
-[![bundle size](https://img.shields.io/bundlephobia/minzip/react-maskify)](https://bundlephobia.com/package/react-maskify)
-[![license](https://img.shields.io/npm/l/react-maskify.svg)](./LICENSE)
 [![CI](https://github.com/rjsgud49/react-maskify/actions/workflows/ci.yml/badge.svg)](https://github.com/rjsgud49/react-maskify/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/react-maskify.svg)](./LICENSE)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/react-maskify)](https://bundlephobia.com/package/react-maskify)
+
+[Live demo](https://rjsgud49.github.io/react-maskify/) · [Migration guide](./docs/MIGRATION.md) · [한국어 안내](#한국어-안내) · [Changelog](./CHANGELOG.md)
+
+## Migrating from react-input-mask
+
+`react-maskify/compat` is the same component as the default export and accepts the v2 and v3 mask props. Swap the import, or rewrite imports with the codemod (`react-maskify migrate [paths...] [--dry]`):
+
+```diff
+- import InputMask from 'react-input-mask';
++ import InputMask from 'react-maskify/compat';
+```
+
+```bash
+npx react-maskify migrate src
+npx react-maskify migrate src --dry
+```
+
+`ref` points at the `<input>`, not a class instance. The rest of the differences are in [docs/MIGRATION.md](./docs/MIGRATION.md).
+
+react-input-mask에서 옮길 때는 import를 `react-maskify/compat`으로 바꿉니다. 한글 IME와 한국 번호 프리셋은 [한국어 안내](#한국어-안내)에 있습니다.
 
 Input mask component and hook for React 17, 18 and 19. It accepts the props of
 [react-input-mask](https://github.com/sanniassin/react-input-mask) v2 and v3, so existing code can switch by changing the import.
-
-[Live demo](https://rjsgud49.github.io/react-maskify/) · [Migration guide](./docs/MIGRATION.md) · [Changelog](./CHANGELOG.md)
 
 - No `findDOMNode`. Works with React 19 and StrictMode. `ref` works as a prop and through `forwardRef`.
 - No runtime dependencies. ESM and CJS builds with TypeScript types. About 3 KB min+gzip.
@@ -168,7 +188,7 @@ The older `presets` object (`presets.phoneKR`, `presets.card`, ...) is still exp
 
 Other props are passed to the `<input>`.
 
-## Migrating from react-input-mask
+## Migration details
 
 react-input-mask 2.0.4 was published on 2018-09-01 (3.0.0-alpha.2 on 2020-01-21), and the repository is archived.
 It calls `ReactDOM.findDOMNode`, which React 19 removed, so it fails with `findDOMNode is not a function`.

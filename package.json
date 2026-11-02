@@ -1,7 +1,7 @@
 {
   "name": "react-maskify",
   "version": "0.3.1",
-  "description": "Input mask component and hook for React 17-19. Maintained replacement for react-input-mask with a compat entry, Korean presets and a migration codemod. Zero dependencies, TypeScript.",
+  "description": "React 19-compatible drop-in replacement for react-input-mask. Korean IME-safe masks, presets for Korean phone, business, and resident numbers, and a migrate codemod. React 17–19, TypeScript, no runtime dependencies.",
   "author": "rjsgud49",
   "license": "MIT",
   "type": "module",
@@ -57,6 +57,7 @@
     "input-mask",
     "masked-input",
     "react-input-mask",
+    "react-mask",
     "react-input-mask-alternative",
     "react-text-mask",
     "react-19",
@@ -64,11 +65,13 @@
     "hook",
     "useMask",
     "phone",
+    "phone-mask",
     "credit-card",
     "date",
     "format",
     "typescript",
     "korean",
+    "ime",
     "react-hook-form",
     "react19",
     "react-18",
@@ -120,7 +123,7 @@
     "type": "git",
     "url": "git+https://github.com/rjsgud49/react-maskify.git"
   },
-  "homepage": "https://github.com/rjsgud49/react-maskify#readme",
+  "homepage": "https://rjsgud49.github.io/react-maskify/",
   "bugs": {
     "url": "https://github.com/rjsgud49/react-maskify/issues"
   },
