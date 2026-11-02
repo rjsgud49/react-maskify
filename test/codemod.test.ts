@@ -20,6 +20,29 @@ describe('codemod', () => {
     expect(code).toContain(`'react-input-mask-extra'`);
   });
 
+  it('rewrites scoped react-input-mask and react-input-mask-next', () => {
+    const src = [
+      `import A from '@kerim-keskin/react-input-mask';`,
+      `import B from "@other.scope/react-input-mask";`,
+      `const C = require('react-input-mask-next');`,
+      `import D from '@scope/react-input-mask-next';`,
+      `import Deep from 'react-input-mask/lib/foo';`,
+      `import NextDeep from 'react-input-mask-next/lib/foo';`,
+      `const extra = 'react-input-mask-extra';`,
+      `const nextExtra = 'react-input-mask-next-extra';`,
+    ].join('\n');
+    const { code, count } = transform(src);
+    expect(count).toBe(4);
+    expect(code).toContain(`import A from 'react-maskify/compat';`);
+    expect(code).toContain(`import B from "react-maskify/compat";`);
+    expect(code).toContain(`require('react-maskify/compat');`);
+    expect(code).toContain(`import D from 'react-maskify/compat';`);
+    expect(code).toContain(`import Deep from 'react-input-mask/lib/foo';`);
+    expect(code).toContain(`import NextDeep from 'react-input-mask-next/lib/foo';`);
+    expect(code).toContain(`'react-input-mask-extra'`);
+    expect(code).toContain(`'react-input-mask-next-extra'`);
+  });
+
   it('leaves comments, strings, subpath imports and declare module alone', () => {
     const src = [
       `// see import X from 'react-input-mask' in old docs`,

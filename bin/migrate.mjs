@@ -4,10 +4,11 @@ import path from 'node:path';
 
 const EXT = /\.(?:[cm]?[jt]sx?)$/;
 const SKIP = new Set(['node_modules', '.git', 'dist', 'build', '.next', 'coverage']);
-// 'react-input-mask' in import/export/require/import()/jest.mock/vi.mock; keeps the original quote style.
+// 'react-input-mask', '@scope/react-input-mask', and 'react-input-mask-next' in
+// import/export/require/import()/jest.mock/vi.mock; keeps the original quote style.
 // Comments and string/template literals are matched as whole tokens so their contents are left alone.
 const RE =
-  /(\bfrom\s*|\bimport\s*|\brequire\s*\(\s*|\bimport\s*\(\s*|\b(?:jest|vi)\.mock\s*\(\s*)(['"])react-input-mask\2|\/\/[^\n]*|\/\*[\s\S]*?\*\/|'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`(?:\\.|[^`\\])*`/g;
+  /(\bfrom\s*|\bimport\s*|\brequire\s*\(\s*|\bimport\s*\(\s*|\b(?:jest|vi)\.mock\s*\(\s*)(['"])(?:@[A-Za-z0-9._-]+\/)?react-input-mask(?:-next)?\2|\/\/[^\n]*|\/\*[\s\S]*?\*\/|'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`(?:\\.|[^`\\])*`/g;
 
 /** Rewrite react-input-mask module specifiers in one file's source. */
 export function transform(source) {

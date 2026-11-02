@@ -82,7 +82,7 @@ export interface UseMaskResult {
   /** Only the user-entered characters. */
   unmaskedValue: string;
   /** The current input element. */
-  inputRef: React.MutableRefObject<HTMLInputElement | null>;
+  inputRef: React.MutableRefObject<TextField | null>;
 }
 
 function v2Config(p: ParsedMask, fc: FormatChars | undefined, alwaysShowMask: boolean): BeforeMaskedValueChangeConfig {
@@ -102,6 +102,34 @@ function v2Config(p: ParsedMask, fc: FormatChars | undefined, alwaysShowMask: bo
 const useIsoLayoutEffect = typeof window != 'undefined' ? React.useLayoutEffect : React.useEffect;
 const str = (v: unknown): string => (v == null ? '' : Array.isArray(v) ? v.join('') : String(v));
 
+type TextField = HTMLInputElement | HTMLTextAreaElement;
+
+function isTextField(n: unknown): n is TextField {
+  return (
+    (typeof HTMLInputElement != 'undefined' && n instanceof HTMLInputElement) ||
+    (typeof HTMLTextAreaElement != 'undefined' && n instanceof HTMLTextAreaElement)
+  );
+}
+
+/**
+ * Child components such as Ant Design Input pass a ref object (`{ input, nativeElement }`),
+ * not the DOM node. The user's own ref still receives that object unchanged.
+ */
+function resolveInput(n: unknown): TextField | null {
+  if (n == null || isTextField(n)) return isTextField(n) ? n : null;
+  if (typeof n != 'object') return null;
+  const o = n as { input?: unknown; nativeElement?: unknown; inputRef?: { current?: unknown } };
+  if (isTextField(o.input)) return o.input;
+  const native = o.nativeElement;
+  if (isTextField(native)) return native;
+  if (typeof Element != 'undefined' && native instanceof Element) {
+    const found = native.querySelector('input');
+    if (isTextField(found)) return found;
+  }
+  if (isTextField(o.inputRef?.current)) return o.inputRef.current;
+  return null;
+}
+
 /** Headless masking hook. Spread the returned props onto an `<input>`. */
 export function useMask(o: UseMaskOptions): UseMaskResult {
   const parseOpts = {
@@ -115,7 +143,7 @@ export function useMask(o: UseMaskOptions): UseMaskResult {
   const p = parseFor(current);
   const [focused, setFocused] = React.useState(false);
   const [composing, setComposing] = React.useState<string | null>(null);
-  const el = React.useRef<HTMLInputElement | null>(null);
+  const el = React.useRef<TextField | null>(null);
   const pending = React.useRef<number | null>(null);
   const backward = React.useRef(true);
   const snap = React.useRef('');
@@ -130,7 +158,8 @@ export function useMask(o: UseMaskOptions): UseMaskResult {
 
   const setSel = (c: number) => {
     const i = el.current;
-    if (i && i.ownerDocument.activeElement === i) i.setSelectionRange(c, c);
+    const doc = i?.ownerDocument;
+    if (i && doc && doc.activeElement === i) i.setSelectionRange(c, c);
   };
 
   useIsoLayoutEffect(() => {
@@ -178,7 +207,7 @@ export function useMask(o: UseMaskOptions): UseMaskResult {
   };
 
   const ref = React.useCallback((n: HTMLInputElement | null) => {
-    el.current = n;
+    el.current = resolveInput(n);
   }, []);
   const inputProps: MaskInputProps = {
     ref,
@@ -203,7 +232,8 @@ export function useMask(o: UseMaskOptions): UseMaskResult {
       const v0 = i.value;
       setTimeout(() => {
         // Recompute from the live value: the user may already have typed since focus.
-        if (i.ownerDocument.activeElement !== i || i.value !== v0 && i.value !== render(p, raw)) return;
+        const doc = i?.ownerDocument;
+        if (!doc || doc.activeElement !== i || i.value !== v0 && i.value !== render(p, raw)) return;
         const fillPos = fillAt(conform(p, i.value));
         if (i.selectionStart === i.selectionEnd && (i.selectionEnd || 0) > fillPos) setSel(fillPos);
       });

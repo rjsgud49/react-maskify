@@ -196,7 +196,7 @@ It calls `ReactDOM.findDOMNode`, which React 19 removed, so it fails with `findD
 ```bash
 npm uninstall react-input-mask @types/react-input-mask
 npm install react-maskify
-npx react-maskify migrate src     # rewrites the imports; add --dry to preview
+npx react-maskify migrate src     # rewrites react-input-mask, @scope/react-input-mask, and react-input-mask-next; add --dry to preview
 ```
 
 Before:
@@ -240,7 +240,7 @@ Behavior differences and more examples are in [docs/MIGRATION.md](./docs/MIGRATI
 ## 한국어 안내
 
 react-input-mask를 쓰던 코드는 import를 `react-maskify/compat`으로 바꾸면 그대로 동작합니다.
-`npx react-maskify migrate src`로 import를 일괄 변경할 수 있습니다.
+`npx react-maskify migrate src`로 `react-input-mask`, `@scope/react-input-mask`, `react-input-mask-next` import를 일괄 변경할 수 있습니다.
 
 - React 17, 18, 19 지원. `findDOMNode`를 쓰지 않습니다.
 - 한글 IME 조합 중에는 마스크를 적용하지 않고 조합이 끝난 뒤 적용합니다.

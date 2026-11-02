@@ -215,6 +215,54 @@ describe('refs and children', () => {
     expect(ir).toHaveBeenCalledWith(get());
     expect(Named).toBe(InputMask);
   });
+  it('types into an antd-like child whose ref is { input }, and still forwards that object', async () => {
+    const inputRef = React.createRef<HTMLInputElement>();
+    const AntdLike = React.forwardRef(function AntdLike(
+      props: React.InputHTMLAttributes<HTMLInputElement>,
+      ref: React.ForwardedRef<{ input: HTMLInputElement | null }>,
+    ) {
+      React.useImperativeHandle(ref, () => ({
+        input: inputRef.current,
+        focus: () => inputRef.current?.focus(),
+        blur: () => inputRef.current?.blur(),
+        nativeElement: inputRef.current?.parentElement ?? null,
+      }));
+      return <input {...props} ref={inputRef} />;
+    });
+    const userRef = vi.fn();
+    render(
+      <InputMask mask="99-99" ref={userRef}>
+        <AntdLike />
+      </InputMask>,
+    );
+    const el = screen.getByRole('textbox') as HTMLInputElement;
+    await userEvent.setup().type(el, '1234');
+    expect(el.value).toBe('12-34');
+    expect(userRef).toHaveBeenCalled();
+    expect(userRef.mock.calls.at(-1)?.[0]).toMatchObject({ input: el });
+  });
+  it('finds the input inside a nativeElement wrapper', async () => {
+    const Wrap = React.forwardRef(function Wrap(
+      props: React.InputHTMLAttributes<HTMLInputElement>,
+      ref: React.ForwardedRef<{ nativeElement: HTMLElement | null }>,
+    ) {
+      const span = React.useRef<HTMLSpanElement>(null);
+      React.useImperativeHandle(ref, () => ({ nativeElement: span.current }));
+      return (
+        <span ref={span}>
+          <input {...props} />
+        </span>
+      );
+    });
+    render(
+      <InputMask mask="99-99">
+        <Wrap />
+      </InputMask>,
+    );
+    const el = screen.getByRole('textbox') as HTMLInputElement;
+    await userEvent.setup().type(el, '1234');
+    expect(el.value).toBe('12-34');
+  });
   it('children render prop', async () => {
     render(
       <InputMask mask="99-99" className="x">

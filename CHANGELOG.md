@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- **Fix:** `<InputMask><Input /></InputMask>` no longer throws `activeElement` on each keypress when the child ref is an object such as Ant Design `Input` (`{ input, nativeElement }`). The mask uses the real `<input>`; the ref you passed to `InputMask` still receives that object.
+- **Fix:** the codemod rewrites `@scope/react-input-mask` and `react-input-mask-next` to `react-maskify/compat`, as well as `react-input-mask`.
+
 ## 0.3.1 — 2026-10-29
 
 - **Fix:** the codemod no longer rewrites `react-input-mask` inside comments or string literals. `--help` lists `.mts` and `.cts`, and the directories it skips (`node_modules`, `.git`, `dist`, `build`, `.next`, `coverage`).
