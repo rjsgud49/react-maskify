@@ -1,9 +1,13 @@
 # Changelog
 
-## Unreleased
+## 0.3.2 — 2026-11-12
 
 - **Fix:** `<InputMask><Input /></InputMask>` no longer throws `activeElement` on each keypress when the child ref is an object such as Ant Design `Input` (`{ input, nativeElement }`). The mask uses the real `<input>`; the ref you passed to `InputMask` still receives that object.
 - **Fix:** the codemod rewrites `@scope/react-input-mask` and `react-input-mask-next` to `react-maskify/compat`, as well as `react-input-mask`.
+- **Fix:** `bin` is `bin/cli.mjs` with no leading `./`, the path npm publish keeps.
+- Docs: the README leads with the react-input-mask import swap, `npx react-maskify migrate`, the GitHub Pages demo, and a short Korean pointer. The npm homepage is that demo.
+- CI: Node 22 (Node 20 is EOL), including the Windows unit-test job. The build test runs tsup's JavaScript entry so Windows does not look for `node_modules/.bin/tsup`. Actions: `checkout` 7, `upload-pages-artifact` 5.
+- Dev: vitest 5.1.0, eslint 10.14, jsdom 30, `@types/node` 26, vite 8.3.6, typescript-eslint 8.72.1, `@playwright/test` 1.65.
 
 ## 0.3.1 — 2026-10-29
 
