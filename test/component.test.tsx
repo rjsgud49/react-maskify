@@ -239,7 +239,7 @@ describe('refs and children', () => {
     await userEvent.setup().type(el, '1234');
     expect(el.value).toBe('12-34');
     expect(userRef).toHaveBeenCalled();
-    expect(userRef.mock.calls.at(-1)?.[0]).toMatchObject({ input: el });
+    expect(userRef.mock.lastCall?.[0]).toMatchObject({ input: el });
   });
   it('finds the input inside a nativeElement wrapper', async () => {
     const Wrap = React.forwardRef(function Wrap(
